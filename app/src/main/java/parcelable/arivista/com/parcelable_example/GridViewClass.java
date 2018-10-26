@@ -1,6 +1,11 @@
 package parcelable.arivista.com.parcelable_example;
 
+import android.content.Intent;
+import android.content.IntentSender;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +31,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class GridViewClass extends Fragment {
 
+
+    private static final String LIST_SET ="LIST_SET" ;
     protected GridView mGridView;
     Adapter_Grid Grid_adapter;
     ArrayList<List_Holder> list_holders;
@@ -41,8 +48,15 @@ public class GridViewClass extends Fragment {
         Grid_adapter = new Adapter_Grid(getContext(),list_holders);
         mGridView.setAdapter(Grid_adapter);
 
+        if(savedInstanceState!=null){
+            list_holders=savedInstanceState.getParcelableArrayList(LIST_SET);
+            Grid_adapter = new Adapter_Grid(getContext(),list_holders);
+            mGridView.setAdapter(Grid_adapter);
+        }else {
+            getGetLists();
+        }
 
-        getGetLists();
+
 
         return view;
     }
@@ -81,6 +95,12 @@ public class GridViewClass extends Fragment {
                 Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList(LIST_SET, list_holders);
     }
 }
 
