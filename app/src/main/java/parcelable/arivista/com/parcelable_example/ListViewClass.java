@@ -1,6 +1,8 @@
 package parcelable.arivista.com.parcelable_example;
 
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.os.PersistableBundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -28,6 +30,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ListViewClass extends Fragment {
 
+    private static final String LIST_SET ="Our List";
     RecyclerView recyclerView;
 
     Adapter_List adapter_list;
@@ -48,7 +51,17 @@ public class ListViewClass extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
 
-        getGetLists();
+
+
+        if(savedInstanceState!=null){
+            list_holders=savedInstanceState.getParcelableArrayList(LIST_SET);
+            adapter_list=new Adapter_List(list_holders,R.layout.list_image);
+            recyclerView.setAdapter(adapter_list);
+            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            recyclerView.setItemAnimator(new DefaultItemAnimator());
+        }else {
+            getGetLists();
+        }
 
         return view;
     }
@@ -87,5 +100,11 @@ public class ListViewClass extends Fragment {
                 Toast.makeText(getContext(), t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList(LIST_SET, (ArrayList<? extends Parcelable>) list_holders);
     }
 }
